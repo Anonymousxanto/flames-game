@@ -4,7 +4,7 @@ import requests
 st.title("🔥 FLAMES Game")
 
 # ---- Discord webhook (use secrets later) ----
-WEBHOOK_URL = "https://discordapp.com/api/webhooks/1454856516145250305/pFKHwwDmT3nqccrcZbjzFpGewVlpw1qKrskuocXO-QGrZ-mdNmXyh4HGXu1NJQyCGmXh"
+WEBHOOK_URL = "https://discordapp.com/api/webhooks/1454866233714413724/x0wbhqvgDxxHUaOVp7xiF6o3RFBxeYtXubuoMWQo2f-IUnkJAaqN0uHAQuZm3E7WRi1M"
 
 # ---- Session flag to prevent repeat sending ----
 if "discord_sent" not in st.session_state:
@@ -65,3 +65,4 @@ if st.button("Get Result"):
 
             requests.post(WEBHOOK_URL, json=payload)
             st.session_state.discord_sent = True
+

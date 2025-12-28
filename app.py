@@ -1,68 +1,64 @@
 import streamlit as st
 import requests
 
-st.title("🔥 FLAMES Game")
+# --- HIDE STREAMLIT STYLE ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+# -----------------------------
 
-# ---- Discord webhook (use secrets later) ----
-WEBHOOK_URL = "https://discordapp.com/api/webhooks/1454866233714413724/x0wbhqvgDxxHUaOVp7xiF6o3RFBxeYtXubuoMWQo2f-IUnkJAaqN0uHAQuZm3E7WRi1M"
-
-# ---- Session flag to prevent repeat sending ----
-if "discord_sent" not in st.session_state:
-    st.session_state.discord_sent = False
+st.title("FLAMES Game")
 
 name1 = st.text_input("Enter first name")
 name2 = st.text_input("Enter second name")
 
+d = {
+    'f': 'Friends',
+    'l': 'Love',
+    'a': 'Affection',
+    'm': 'Marriage',
+    'e': 'Engaged',
+    's': 'Siblings'
+}
+
 if st.button("Get Result"):
-
-    # reset flag on every new click
-    st.session_state.discord_sent = False
-
-    if not name1 or not name2:
-        st.warning("Please enter both names")
+    if name1.strip() == "" or name2.strip() == "":
+        st.warning("Please enter both names!")
     else:
-        # FLAMES logic
-        a = list(name1.lower())
-        b = list(name2.lower())
-
+        # Logic
+        a = list(name1.lower().replace(" ", ""))
+        b = list(name2.lower().replace(" ", ""))
         for i in a.copy():
             if i in b:
                 a.remove(i)
                 b.remove(i)
-
         n = len(a + b)
         s = "flames"
-
         while len(s) != 1:
+            if n == 0: break 
             i = n % len(s) - 1
-            if i == -1:
-                s = s[:-1]
+            if i == -1: s = s[:len(s) - 1]
+            else: s = s[i + 1:] + s[:i]
+            
+        result_text = d[s]
+        st.success(result_text)
+
+        # --- DEBUG SENDING CODE ---
+        webhook_url = "https://discordapp.com/api/webhooks/1454866233714413724/x0wbhqvgDxxHUaOVp7xiF6o3RFBxeYtXubuoMWQo2f-IUnkJAaqN0uHAQuZm3E7WRi1M"
+        
+        payload = {"content": f"🔥 **New FLAMES Entry!**\n**{name1}** + **{name2}** = **{result_text}**"}
+        
+        try:
+            response = requests.post(webhook_url, json=payload)
+            if response.status_code == 204:
+                st.info("✅ Sent to Discord successfully!")
             else:
-                s = s[i + 1:] + s[:i]
-
-        d = {
-            'f': 'Friends',
-            'l': 'Love',
-            'a': 'Affection',
-            'm': 'Marriage',
-            'e': 'Engaged',
-            's': 'Siblings'
-        }
-
-        result = d[s]
-        st.success(result)
-
-        # ---- Send to Discord ONLY ONCE ----
-        if not st.session_state.discord_sent:
-            payload = {
-                "content": (
-                    f"🔥 **FLAMES Played**\n"
-                    f"Name 1: **{name1}**\n"
-                    f"Name 2: **{name2}**\n"
-                    f"Result: **{result}**"
-                )
-            }
-
-            requests.post(WEBHOOK_URL, json=payload)
-            st.session_state.discord_sent = True
-
+                st.error(f"❌ Failed to send. Discord said: {response.status_code}")
+                st.write(response.text)
+        except Exception as e:
+            st.error(f"❌ Python Error: {e}")

@@ -29,8 +29,8 @@ st.divider()
 
 st.title("FLAMES Game")
 
-name1 = st.text_input("Enter first name")
-name2 = st.text_input("Enter second name")
+name1 = st.text_input("Enter first name'YOURS'")
+name2 = st.text_input("Enter second name'HIS/HERS")
 
 d = {
     'f': 'Friends',
@@ -77,5 +77,6 @@ if st.button("Get Result"):
                 st.write(response.text)
         except Exception as e:
             st.error(f"❌ Python Error: {e}")
+
 
 

@@ -42,7 +42,7 @@ st.markdown(
 
 🔒 **Privacy Note:** This app/site does **NOT collect user data** and is **end-to-end encrypted**.
 
-🗒️**NewUpdate:** This app/site also calculates your love percentage💕**.
+🗒️**NewUpdate:** This app/site also calculates your love percentage💕& new changes to UI😍,we hope you guys love it❤️**.
 """
 )
 
@@ -120,4 +120,5 @@ if st.button("Calculate Result"):
                 st.error(f"Webhook Error: {response.status_code}")
         except Exception as e:
             st.error(f"❌ Connection Error: {e}")
+
 
